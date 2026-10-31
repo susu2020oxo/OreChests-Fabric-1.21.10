@@ -13,7 +13,7 @@ replacements = [
     ("private static ItemStack enchanted(Item item,", "private static ItemStack enchanted(ServerWorld world, Item item,"),
     ("addEnchantment(stack, enchantment, level);", "addEnchantment(world, stack, enchantment, level);"),
     ("private static void addEnchantment(ItemStack stack,", "private static void addEnchantment(ServerWorld world, ItemStack stack,"),
-    ("Registries.ENCHANTMENT.getEntry(enchantment)", "world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(enchantment)"),
+    ("Registries.ENCHANTMENT.getEntry(enchantment)", "world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getEntry(enchantment)"),
     ("if (!world.isClient() && player.getStackInHand(hand).isOf(ModItems.IRON_HAMMER))", "if (!world.isClient() && world instanceof ServerWorld serverWorld && player.getStackInHand(hand).isOf(ModItems.IRON_HAMMER))"),
     ("living.damage(world.getDamageSources().playerAttack(player), 20.0F);", "living.damage(serverWorld, serverWorld.getDamageSources().playerAttack(player), 20.0F);"),
     ("import net.minecraft.registry.Registries;", "import net.minecraft.registry.RegistryKeys;"),
