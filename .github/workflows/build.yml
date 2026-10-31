@@ -41,7 +41,7 @@ jobs:
           s = p.read_text()
           s = s.replace(
               "world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(enchantment)",
-              "world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getEntry(enchantment)"
+              "world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getEntry(enchantment.getValue())"
           )
           p.write_text(s)
           p = Path("src/main/java/com/orechests/item/OneHitAxeItem.java")
