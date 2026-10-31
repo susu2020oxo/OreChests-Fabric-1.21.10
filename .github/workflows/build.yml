@@ -1,4 +1,4 @@
-name: Build Ore Chests Mod
+name: Build Ore Chests Mod v1.2.0
 
 on:
   push:
@@ -26,13 +26,12 @@ jobs:
         with:
           gradle-version: "8.14.3"
 
-      - name: Restore complete mod project
+      - name: Restore complete mod project v1.2.0
         run: |
-          rm -rf src build.gradle gradle.properties settings.gradle README.md LICENSE build.bat
-          cat source_parts/part00.b64 source_parts/part01.b64 source_parts/part02.b64 source_parts/part03a.b64 source_parts/part03b.b64 source_parts/part04.b64 source_parts/part05.b64 | base64 --decode > orechests-mod-source.tar.gz
+          rm -rf src build.gradle gradle.properties settings.gradle README.md LICENSE build.bat source_parts
+          cat source_parts_v1_2_0/part00.b64 source_parts_v1_2_0/part01.b64 source_parts_v1_2_0/part02.b64 source_parts_v1_2_0/part03.b64 | base64 --decode > orechests-mod-source.tar.gz
           tar -xzf orechests-mod-source.tar.gz
-          python3 fix_v1_1_0.py
-          rm -rf source_parts orechests-mod-source.tar.gz
+          rm -rf source_parts_v1_2_0 orechests-mod-source.tar.gz fix_v1_1_0.py
 
       - name: Build mod
         run: gradle --no-daemon clean build
@@ -40,8 +39,7 @@ jobs:
       - name: Upload installable mod JAR
         uses: actions/upload-artifact@v4
         with:
-          name: OreChests-Fabric-1.21.10-v1.1.0
+          name: OreChests-Fabric-1.21.10-v1.2.0
           path: |
-            build/libs/orechests-1.1.0.jar
-            !build/libs/*-sources.jar
+            build/libs/orechests-1.2.0.jar
           if-no-files-found: error
