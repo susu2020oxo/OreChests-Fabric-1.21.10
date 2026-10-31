@@ -30,7 +30,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.attributes.EquipmentSlotGroup;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.inventory.ChestMenu;
@@ -99,8 +99,9 @@ public final class OreChestsMod implements ModInitializer {
                 BlockPos spawnPos = hit.getBlockPos().relative(hit.getDirection()).above();
                 var golem = EntityType.IRON_GOLEM.create(serverLevel, EntitySpawnReason.SPAWN_ITEM_USE);
                 if (golem != null) {
-                    golem.moveTo(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5,
-                            player.getYRot(), 0.0F);
+                    golem.setPos(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
+                    golem.setYRot(player.getYRot());
+                    golem.setXRot(0.0F);
                     serverLevel.addFreshEntity(golem);
                     if (!player.getAbilities().instabuild) {
                         held.shrink(1);
@@ -125,7 +126,7 @@ public final class OreChestsMod implements ModInitializer {
         if (player instanceof ServerPlayer serverPlayer) {
             String key = level.dimension().location() + ":" + pos.asLong();
             SimpleContainer inventory = ORE_INVENTORIES.computeIfAbsent(
-                    key, ignored -> createLoot(serverPlayer.serverLevel(), oreType));
+                    key, ignored -> createLoot((ServerLevel) serverPlayer.level(), oreType));
 
             String title = switch (oreType) {
                 case "iron" -> "铁矿宝箱";
@@ -206,6 +207,7 @@ public final class OreChestsMod implements ModInitializer {
     }
 
     private static void tickPlayer(ServerPlayer player) {
+        ServerLevel playerLevel = (ServerLevel) player.level();
         ItemStack held = player.getMainHandItem();
 
         if (isNamed(held, COAL_SWORD_NAME)) {
@@ -221,8 +223,8 @@ public final class OreChestsMod implements ModInitializer {
 
         if (isNamed(held, DIAMOND_WAND_NAME) && player.onGround()) {
             BlockPos underPlayer = BlockPos.containing(player.getX(), player.getY() - 0.05, player.getZ());
-            if (!player.serverLevel().getBlockState(underPlayer).is(Blocks.DIAMOND_BLOCK)) {
-                player.serverLevel().setBlock(underPlayer, Blocks.DIAMOND_BLOCK.defaultBlockState(), 3);
+            if (!playerLevel.getBlockState(underPlayer).is(Blocks.DIAMOND_BLOCK)) {
+                playerLevel.setBlock(underPlayer, Blocks.DIAMOND_BLOCK.defaultBlockState(), 3);
             }
         }
     }
