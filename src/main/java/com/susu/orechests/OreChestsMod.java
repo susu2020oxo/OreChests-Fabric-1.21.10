@@ -138,7 +138,6 @@ public final class OreChestsMod implements ModInitializer {
                 case "emerald" -> "绿宝石矿宝箱";
                 case "lapis" -> "青金石矿宝箱";
                 case "redstone" -> "红石矿宝箱";
-                case "quartz" -> "下界石英矿宝箱";
                 default -> "矿物宝箱";
             };
 
@@ -294,9 +293,6 @@ public final class OreChestsMod implements ModInitializer {
             case "redstone" -> {
                 inventory.setItem(0, new ItemStack(Items.REDSTONE, random(level, 20, 48)));
             }
-            case "quartz" -> {
-                inventory.setItem(0, new ItemStack(Items.QUARTZ, random(level, 12, 32)));
-            }
             default -> inventory.setItem(0, new ItemStack(Items.COBBLESTONE, 1));
         }
 
@@ -305,8 +301,7 @@ public final class OreChestsMod implements ModInitializer {
 
     private static String getOreType(BlockState state) {
         if (state.is(Blocks.IRON_ORE) || state.is(Blocks.DEEPSLATE_IRON_ORE)) return "iron";
-        if (state.is(Blocks.GOLD_ORE) || state.is(Blocks.DEEPSLATE_GOLD_ORE)
-                || state.is(Blocks.NETHER_GOLD_ORE)) return "gold";
+        if (state.is(Blocks.GOLD_ORE) || state.is(Blocks.DEEPSLATE_GOLD_ORE)) return "gold";
         if (state.is(Blocks.DIAMOND_ORE) || state.is(Blocks.DEEPSLATE_DIAMOND_ORE)) return "diamond";
         if (state.is(Blocks.COAL_ORE) || state.is(Blocks.DEEPSLATE_COAL_ORE)) return "coal";
         if (state.is(Blocks.COPPER_ORE) || state.is(Blocks.DEEPSLATE_COPPER_ORE)) return "copper";
@@ -314,7 +309,6 @@ public final class OreChestsMod implements ModInitializer {
         if (state.is(Blocks.EMERALD_ORE) || state.is(Blocks.DEEPSLATE_EMERALD_ORE)) return "emerald";
         if (state.is(Blocks.LAPIS_ORE) || state.is(Blocks.DEEPSLATE_LAPIS_ORE)) return "lapis";
         if (state.is(Blocks.REDSTONE_ORE) || state.is(Blocks.DEEPSLATE_REDSTONE_ORE)) return "redstone";
-        if (state.is(Blocks.NETHER_QUARTZ_ORE)) return "quartz";
         return null;
     }
 
