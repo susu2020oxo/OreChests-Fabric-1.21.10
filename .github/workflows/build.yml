@@ -33,6 +33,26 @@ jobs:
           tar -xzf orechests-mod-source.tar.gz
           rm -rf source_parts_v1_2_0 orechests-mod-source.tar.gz fix_v1_1_0.py
 
+      - name: Apply Minecraft 1.21.10 API compatibility fixes
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("src/main/java/com/orechests/OreChestsMod.java")
+          s = p.read_text()
+          s = s.replace(
+              "world.getRegistryManager().get(RegistryKeys.ENCHANTMENT).getEntry(enchantment)",
+              "world.getRegistryManager().getOrThrow(RegistryKeys.ENCHANTMENT).getEntry(enchantment)"
+          )
+          p.write_text(s)
+          p = Path("src/main/java/com/orechests/item/OneHitAxeItem.java")
+          s = p.read_text()
+          s = s.replace(
+              "public boolean postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {\n        stack.damage(1, attacker, EquipmentSlot.MAINHAND);\n        return true;\n    }",
+              "public void postHit(ItemStack stack, LivingEntity target, LivingEntity attacker) {\n        stack.damage(1, attacker, EquipmentSlot.MAINHAND);\n    }"
+          )
+          p.write_text(s)
+          PY
+
       - name: Build mod
         run: gradle --no-daemon clean build
 
