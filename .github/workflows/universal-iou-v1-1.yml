@@ -17,13 +17,15 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.14.3'
-      - name: Build Fabric mod
+      - name: Compile mod with current block API
         shell: bash
         run: |
           mkdir -p iou-project
           unzip -q source/universal-iou.zip -d iou-project
           cd iou-project/universal-iou
           sed -i 's/mod_version=1.0.0/mod_version=1.1.0/' gradle.properties
+          sed -i 's/class BigTntBlock extends TntBlock/class BigTntBlock extends Block/' src/main/java/com/example/universaliou/ModBlocks.java
+          sed -i '/@Override/d' src/main/java/com/example/universaliou/ModBlocks.java
           gradle --no-daemon build
       - uses: actions/upload-artifact@v4
         if: success()
