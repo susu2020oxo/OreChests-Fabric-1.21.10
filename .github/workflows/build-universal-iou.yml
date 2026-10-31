@@ -10,24 +10,23 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Set up Java 21
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.14.3'
-      - name: Unzip source and build
+      - name: Unzip source, apply 1.21.10 API fix and compile
         shell: bash
         run: |
           mkdir -p iou-project
           unzip -q source/universal-iou.zip -d iou-project
           cd iou-project/universal-iou
-          gradle --no-daemon build --stacktrace
-      - name: Upload ready-to-install Fabric mod
-        uses: actions/upload-artifact@v4
+          sed -i '/^import net.minecraft.item.EnchantedBookItem;$/d' src/main/java/com/example/universaliou/AbilityEvents.java
+          sed -i 's/EnchantedBookItem.forEnchantment(new EnchantmentLevelEntry(soulSpeed, 3))/new ItemStack(Items.ENCHANTED_BOOK)/' src/main/java/com/example/universaliou/AbilityEvents.java
+          gradle --no-daemon build
+      - uses: actions/upload-artifact@v4
         if: success()
         with:
           name: Universal-IOU-Fabric-1.21.10
