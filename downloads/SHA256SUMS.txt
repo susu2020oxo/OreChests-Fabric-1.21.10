@@ -1,0 +1,2 @@
+b634a9f1b74269d1d7ac89c09e437ced28bfa56b6e60a08939198ebeef773e92  OreChests-Fabric-1.21.10-max3-install.zip
+c8614e57b4074c5fb993aeaa09d33455720bac1090f659fc1bebec2f7b0b3806  OreChests-Fabric-1.21.10-v1.2.2-max3.jar
