@@ -1,1 +1,26 @@
-{"schemaVersion":1,"id":"diamondworld","version":"1.0.0","name":"钻石世界 · Diamond World","description":"保留原版纹理的青蓝钻石世界：钻石食物、碎片与强化工具。","authors":["Diamond World"],"license":"MIT","environment":"*","entrypoints":{"main":["cn.diamondworld.DiamondWorld"]},"mixins":["diamondworld.mixins.json"],"depends":{"fabricloader":">=0.17.3","minecraft":"~1.21.10","java":">=21","fabric-api":"*"}}
+{
+  "schemaVersion": 1,
+  "id": "diamondworld",
+  "version": "1.1.0",
+  "name": "钻石世界 · Diamond World",
+  "description": "保留原版纹理的青蓝钻石世界：钻石食物、碎片与强化工具。",
+  "authors": [
+    "Diamond World"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "cn.diamondworld.DiamondWorld"
+    ]
+  },
+  "mixins": [
+    "diamondworld.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.17.3",
+    "minecraft": "1.21.10",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

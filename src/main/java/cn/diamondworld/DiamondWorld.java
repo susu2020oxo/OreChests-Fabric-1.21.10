@@ -32,6 +32,13 @@ public final class DiamondWorld implements ModInitializer {
         CONTENTS.add(item);
         return item;
     }
+    private static Item essence(String species) {
+        Identifier id=Identifier.of(ID,species+"_essence");
+        ConsumableComponent consume=ConsumableComponent.builder().consumeEffect(new ApplyEffectsConsumeEffect(EssenceAbilities.effects(species),1F)).build();
+        Item.Settings settings=new Item.Settings().registryKey(RegistryKey.of(RegistryKeys.ITEM,id))
+            .food(new FoodComponent.Builder().nutrition(4).saturationModifier(.8F).alwaysEdible().build(),consume);
+        Item item=Registry.register(Registries.ITEM,id,new EssenceItem(settings,species));CONTENTS.add(item);return item;
+    }
     private static Item.Settings food(int nutrition, int seconds, boolean cooked, String species) {
         List<StatusEffectInstance> effects = new ArrayList<>();
         effects.add(new StatusEffectInstance(StatusEffects.REGENERATION, seconds * 20, cooked ? 1 : 0));
@@ -61,8 +68,8 @@ public final class DiamondWorld implements ModInitializer {
         }
         for (EntityType<?> type : Registries.ENTITY_TYPE) {
             Identifier id = Registries.ENTITY_TYPE.getId(type);
-            if (id.getNamespace().equals("minecraft") && net.minecraft.entity.attribute.DefaultAttributeRegistry.hasDefinitionFor(type) && type != EntityType.PLAYER && type != EntityType.ARMOR_STAND)
-                ESSENCES.put(type, register(id.getPath() + "_essence", food(4, 5, false, id.getPath())));
+            if (id.getNamespace().equals("minecraft") && net.minecraft.entity.attribute.DefaultAttributeRegistry.hasDefinitionFor(type) && type != EntityType.PLAYER && type != EntityType.ARMOR_STAND && !id.getPath().equals("mannequin"))
+                ESSENCES.put(type, essence(id.getPath()));
         }
         Registry.register(Registries.ITEM_GROUP, Identifier.of(ID, "contents"), FabricItemGroup.builder()
             .displayName(Text.translatable("itemGroup.diamondworld"))
@@ -78,6 +85,8 @@ public final class DiamondWorld implements ModInitializer {
                 entity.dropStack(world, new ItemStack(essence, boss ? 12 : 1 + world.random.nextInt(2)));
             }
         });
+        EssenceAbilities.install();
+        HostileTraits.install();
         Verification.install();
         Preview.install();
         LoggerFactory.getLogger(ID).info("Diamond World initialized: {} items, {} species", CONTENTS.size(), ESSENCES.size());

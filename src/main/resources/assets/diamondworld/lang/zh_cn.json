@@ -177,5 +177,20 @@
   "item.diamondworld.zombie_essence": "钻石僵尸精华",
   "item.diamondworld.zombie_horse_essence": "钻石僵尸马精华",
   "item.diamondworld.zombie_villager_essence": "钻石僵尸村民精华",
-  "item.diamondworld.zombified_piglin_essence": "钻石僵尸猪灵精华"
+  "item.diamondworld.zombified_piglin_essence": "钻石僵尸猪灵精华",
+  "effect.diamondworld.flight": "钻石飞翼",
+  "effect.diamondworld.climbing": "蜘蛛攀墙",
+  "effect.diamondworld.blink": "末影闪现",
+  "effect.diamondworld.thorns": "守卫反伤",
+  "effect.diamondworld.fire_touch": "烈焰附身",
+  "effect.diamondworld.venom_touch": "毒刺",
+  "effect.diamondworld.wither_touch": "凋零之触",
+  "effect.diamondworld.creeper_power": "苦力怕蓄爆",
+  "effect.diamondworld.echo": "回声探测",
+  "effect.diamondworld.prospecting": "嗅探寻矿",
+  "effect.diamondworld.rooted_guard": "嘎枝扎根",
+  "effect.diamondworld.spit": "羊驼吐息",
+  "effect.diamondworld.snow_throw": "雪傀儡投雪",
+  "effect.diamondworld.ram": "山羊冲撞",
+  "effect.diamondworld.feline_ward": "猫科威慑"
 }

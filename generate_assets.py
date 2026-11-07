@@ -9,25 +9,64 @@ z=zipfile.ZipFile(sys.argv[1]);root=Path(__file__).parent/'src/main/resources'
 def write(path,data):
  p=root/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(data)
 def js(path,data):write(path,json.dumps(data,ensure_ascii=False,indent=2).encode())
-# Monotonic luminance mapping preserves every original pixel, alpha and animation frame.
-palette=[(0,(3,39,49)),(.20,(4,82,92)),(.40,(7,132,142)),(.60,(23,184,188)),(.78,(72,222,218)),(1,(211,255,249))]
-def recolor(data):
- im=Image.open(io.BytesIO(data)).convert('RGBA');out=[]
- for r,g,b,a in im.getdata():
-  v=(r*.299+g*.587+b*.114)/255
-  # A modest highlight lift gives the diamond-block cyan sheen without replacing texture.
-  v=min(1,v**.86)
-  for (lo,c1),(hi,c2) in zip(palette,palette[1:]):
-   if v<=hi:
-    t=(v-lo)/(hi-lo);out.append(tuple(round(x+(y-x)*t) for x,y in zip(c1,c2))+(a,));break
- im.putdata(out);buf=io.BytesIO();im.save(buf,format='PNG');return buf.getvalue()
+# Diamond block dominates the surface; the original pixels are a subtle relief layer.
+# Keep every original alpha pixel and image dimension so leaves, item silhouettes,
+# model UV layouts and animation frame metadata remain valid.
+from PIL import ImageOps,ImageChops
+original_diamond=Image.open(io.BytesIO(z.read('assets/minecraft/textures/block/diamond_block.png'))).convert('RGB')
+def make_diamond_tile():
+ tile=original_diamond.copy();pixels=[]
+ for y in range(16):
+  for x in range(16):
+   r,g,b=tile.getpixel((x,y))
+   # A saturated cyan body, pale mint facets, and distinct inset block edges.
+   v=(r*.299+g*.587+b*.114)/255
+   t=max(0,min(1,(v-.43)/.49))
+   color=(int(6+150*t),int(140+112*t),int(151+100*t))
+   if x==0 or y==0:color=(109,248,238)
+   if x==15 or y==15:color=(6,133,146)
+   # Two stepped specular facets, matching vanilla pixel-art resolution.
+   if 8<=x+y<=9 and 2<=x<=12 and 2<=y<=12:
+    color=tuple(round(c*.57+h*.43) for c,h in zip(color,(201,255,248)))
+   if 18<=x+y<=19 and 3<=x<=12 and 3<=y<=12:
+    color=tuple(round(c*.75+h*.25) for c,h in zip(color,(161,255,248)))
+   pixels.append(color)
+ tile.putdata(pixels);return tile
+DIAMOND_TILE=make_diamond_tile()
+CYAN_LUT=[]
+for channel in range(3):
+ for value in range(256):
+  t=(value/255)**.86
+  CYAN_LUT.append(round((4,43,54)[channel]+t*(174,212,198)[channel]))
+def recolor(data,name):
+ im=Image.open(io.BytesIO(data)).convert('RGBA');w,h=im.size
+ if name.endswith('/entity/shadow.png'):return data
+ luminance=ImageOps.grayscale(im)
+ original_cyan=Image.merge('RGB',(luminance,luminance,luminance)).point(CYAN_LUT)
+ entity='/entity/' in name and not any(x in name for x in ('/boat/','/chest/','/signs/','/decorated_pot/'))
+ tile=DIAMOND_TILE.resize((8,8),Image.Resampling.NEAREST) if entity else DIAMOND_TILE
+ tiled=Image.new('RGB',im.size)
+ for y in range(0,h,tile.height):
+  for x in range(0,w,tile.width):tiled.paste(tile,(x,y))
+ # Diamond facets remain the main surface on blocks/items; slightly more facial relief on mobs.
+ out=Image.blend(tiled,original_cyan,.28 if entity else .24)
+ if not entity:
+  relief=luminance.point(lambda v:max(0,min(85,(110-v))))
+  out=Image.composite(original_cyan,out,relief)
+ if entity:
+  # Eyes and mouth retain enough dark relief to identify the creature.
+  dark=luminance.point(lambda v:max(0,min(120,(64-v)*2)))
+  out=Image.composite(original_cyan,out,dark)
+ if name.endswith('/block/diamond_block.png'):out=DIAMOND_TILE.copy()
+ out.putalpha(im.getchannel('A'))
+ buf=io.BytesIO();out.save(buf,format='PNG');return buf.getvalue()
 count=0
 for n in z.namelist():
  if n.startswith('assets/minecraft/textures/'):
   part=n.split('/')[3]
   if part in ('block','item','entity','equipment','painting','particle','environment'):
    if n.endswith('.png'):
-    if not (root/n).exists():write(n,recolor(z.read(n)))
+    write(n,recolor(z.read(n),n))
     count+=1
    elif n.endswith('.mcmeta'):write(n,z.read(n))
 # White maps prevent the grass/leaves biome tint from turning cyan back to green.
@@ -81,6 +120,7 @@ js('data/diamondworld/advancement/recipes/diamond_from_fragments.json',{'parent'
 for raw,cooked in [('beef','cooked_beef'),('porkchop','cooked_porkchop'),('mutton','cooked_mutton'),('chicken','cooked_chicken'),('rabbit','cooked_rabbit'),('cod','cooked_cod'),('salmon','cooked_salmon')]:
  for typ,time in [('smelting',200),('smoking',100),('campfire_cooking',600)]:
   js('data/diamondworld/recipe/'+raw+'_'+typ+'.json',{'type':'minecraft:'+typ,'category':'food','ingredient':'diamondworld:diamond_'+raw,'result':{'id':'diamondworld:diamond_'+cooked},'experience':.35,'cookingtime':time})
+Path(__file__).with_name('generated-mobs.json').write_text(json.dumps(mobs))
 print(f'Generated {count} recolored textures, {loot_count} food loot tables, {len(mobs)} species entries.')
 
 for n in z.namelist():
@@ -95,3 +135,35 @@ for n in z.namelist():
     for v in o:untint(v)
   untint(data)
   if changed[0]:js(n,data)
+
+# Essence portraits intentionally retain recognizable original face details and a
+# small diamond accent. Run last so the generic translation/model pass above does
+# not replace the mob-specific portrait textures.
+import subprocess
+subprocess.run([sys.executable,str(Path(__file__).with_name('generate_essence_icons.py')),sys.argv[1]],check=True)
+
+
+# Ability effect names and HUD sprites; keep this after portraits so regeneration is complete.
+effect_names={
+ 'flight':('钻石飞翼','Diamond Flight','slow_falling'),
+ 'climbing':('蜘蛛攀墙','Spider Climbing','jump_boost'),
+ 'blink':('末影闪现','Ender Blink','invisibility'),
+ 'thorns':('守卫反伤','Guardian Thorns','resistance'),
+ 'fire_touch':('烈焰附身','Blazing Touch','fire_resistance'),
+ 'venom_touch':('毒刺','Venomous Touch','poison'),
+ 'wither_touch':('凋零之触','Wither Touch','wither'),
+ 'creeper_power':('苦力怕蓄爆','Creeper Charge','strength'),
+ 'echo':('回声探测','Echo Sense','night_vision'),
+ 'prospecting':('嗅探寻矿','Sniffer Prospecting','luck'),
+ 'rooted_guard':('嘎枝扎根','Creaking Roots','resistance'),
+ 'spit':('羊驼吐息','Llama Spit','strength'),
+ 'snow_throw':('雪傀儡投雪','Snow Golem Throw','slow_falling'),
+ 'ram':('山羊冲撞','Goat Ram','strength'),
+ 'feline_ward':('猫科威慑','Feline Ward','night_vision')}
+for lang,index in [('zh_cn',0),('en_us',1)]:
+ path='assets/diamondworld/lang/'+lang+'.json'
+ data=json.loads((root/path).read_text())
+ for key,names in effect_names.items():data['effect.diamondworld.'+key]=names[index]
+ js(path,data)
+for key,names in effect_names.items():
+ write('assets/diamondworld/textures/mob_effect/'+key+'.png',z.read('assets/minecraft/textures/mob_effect/'+names[2]+'.png'))

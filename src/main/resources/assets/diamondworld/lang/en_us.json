@@ -177,5 +177,20 @@
   "item.diamondworld.zombie_essence": "Diamond Zombie Essence",
   "item.diamondworld.zombie_horse_essence": "Diamond Zombie Horse Essence",
   "item.diamondworld.zombie_villager_essence": "Diamond Zombie Villager Essence",
-  "item.diamondworld.zombified_piglin_essence": "Diamond Zombified Piglin Essence"
+  "item.diamondworld.zombified_piglin_essence": "Diamond Zombified Piglin Essence",
+  "effect.diamondworld.flight": "Diamond Flight",
+  "effect.diamondworld.climbing": "Spider Climbing",
+  "effect.diamondworld.blink": "Ender Blink",
+  "effect.diamondworld.thorns": "Guardian Thorns",
+  "effect.diamondworld.fire_touch": "Blazing Touch",
+  "effect.diamondworld.venom_touch": "Venomous Touch",
+  "effect.diamondworld.wither_touch": "Wither Touch",
+  "effect.diamondworld.creeper_power": "Creeper Charge",
+  "effect.diamondworld.echo": "Echo Sense",
+  "effect.diamondworld.prospecting": "Sniffer Prospecting",
+  "effect.diamondworld.rooted_guard": "Creaking Roots",
+  "effect.diamondworld.spit": "Llama Spit",
+  "effect.diamondworld.snow_throw": "Snow Golem Throw",
+  "effect.diamondworld.ram": "Goat Ram",
+  "effect.diamondworld.feline_ward": "Feline Ward"
 }

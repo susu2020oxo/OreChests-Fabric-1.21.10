@@ -55,6 +55,15 @@ public final class Verification {
     var sheep=EntityType.SHEEP.create(world,SpawnReason.COMMAND);sheep.refreshPositionAndAngles(10,100,0,0,0);world.spawnEntity(sheep);sheep.damage(world,world.getDamageSources().genericKill(),10000);
     var mutton=Registries.ITEM.get(Identifier.of("diamondworld","diamond_mutton"));
     check(world.getEntitiesByClass(ItemEntity.class,new Box(5,95,-5,15,105,5),e->e.getStack().isOf(mutton)).size()>0,"sheep actually drops diamond mutton");
+    V11Verification.run(server);
+    java.util.Map<String,Object> profiles=new java.util.TreeMap<>();
+    for(var entry:DiamondWorld.ESSENCES.entrySet()) {
+        String species=Registries.ENTITY_TYPE.getId(entry.getKey()).getPath();
+        java.util.List<java.util.Map<String,Object>> effects=new java.util.ArrayList<>();
+        for(var effect:EssenceAbilities.effects(species))effects.add(java.util.Map.of("effect",effect.getTranslationKey(),"seconds",effect.getDuration()/20,"level",effect.getAmplifier()+1));
+        profiles.put(species,effects);
+    }
+    java.nio.file.Files.writeString(java.nio.file.Path.of("v11-essence-effects.json"),new com.google.gson.GsonBuilder().setPrettyPrinting().create().toJson(profiles));
     LoggerFactory.getLogger("diamondworld").info("DIAMONDWORLD ALL INTEGRATION CHECKS PASSED");
    } catch(Throwable error) {LoggerFactory.getLogger("diamondworld").error("DIAMONDWORLD VERIFICATION FAILED",error);}
    finally {server.stop(false);}

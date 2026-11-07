@@ -11,6 +11,8 @@ public final class Preview {
   if (!Boolean.getBoolean("diamondworld.preview")) return;
   ServerPlayConnectionEvents.JOIN.register((handler,sender,server)->{
    var p=handler.player;var w=server.getOverworld();
+   w.getEntitiesByClass(net.minecraft.entity.mob.MobEntity.class,new net.minecraft.util.math.Box(-24,60,-24,24,100,24),e->true).forEach(net.minecraft.entity.Entity::discard);
+   w.getEntitiesByClass(net.minecraft.entity.ItemEntity.class,new net.minecraft.util.math.Box(-24,60,-24,24,120,24),e->true).forEach(net.minecraft.entity.Entity::discard);
    for(int x=-22;x<=22;x++)for(int z=-22;z<=22;z++)w.setBlockState(new BlockPos(x,63,z),Blocks.GRASS_BLOCK.getDefaultState());
    for(int y=64;y<=69;y++)w.setBlockState(new BlockPos(0,y,0),Blocks.OAK_LOG.getDefaultState());
    for(int y=67;y<=70;y++)for(int x=-3;x<=3;x++)for(int z=-3;z<=3;z++)
@@ -19,8 +21,10 @@ public final class Preview {
    var cow=EntityType.COW.create(w,SpawnReason.COMMAND);cow.refreshPositionAndAngles(-4,64,2,20,0);cow.setAiDisabled(true);w.spawnEntity(cow);
    var sheep=EntityType.SHEEP.create(w,SpawnReason.COMMAND);sheep.refreshPositionAndAngles(4,64,2,-30,0);sheep.setAiDisabled(true);w.spawnEntity(sheep);
    w.setTimeOfDay(6000);w.setWeather(0,100000,false,false);
-   p.changeGameMode(GameMode.CREATIVE);p.getAbilities().flying=true;p.sendAbilitiesUpdate();handler.requestTeleport(10,68,15,146,12);
-   p.giveItemStack(new ItemStack(Items.IRON_PICKAXE));p.giveItemStack(new ItemStack(DiamondWorld.fragment,3));
+   p.changeGameMode(GameMode.CREATIVE);p.getAbilities().flying=true;p.sendAbilitiesUpdate();handler.requestTeleport(6,67,10,149,12);
+   p.getInventory().clear();
+   p.giveItemStack(new ItemStack(Items.IRON_PICKAXE));
+   for(var type:new EntityType<?>[]{EntityType.BAT,EntityType.CHICKEN,EntityType.SPIDER,EntityType.ENDERMAN,EntityType.CREEPER,EntityType.GUARDIAN,EntityType.WARDEN})p.giveItemStack(new ItemStack(DiamondWorld.ESSENCES.get(type),3));
   });
  }
 }
