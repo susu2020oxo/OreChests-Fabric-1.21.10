@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "ingredient": "diamondworld:diamond_beef",
+  "result": {
+    "id": "diamondworld:diamond_cooked_beef"
+  },
+  "experience": 0.35,
+  "cookingtime": 600
+}

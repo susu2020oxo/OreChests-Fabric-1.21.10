@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smoking",
+  "category": "food",
+  "ingredient": "diamondworld:diamond_cod",
+  "result": {
+    "id": "diamondworld:diamond_cooked_cod"
+  },
+  "experience": 0.35,
+  "cookingtime": 100
+}

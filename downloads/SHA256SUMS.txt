@@ -1,0 +1,2 @@
+6eef2f413ac597b12098590d271517739575509d064cd6f1fb5b510ad966703b  DiamondWorld-Fabric-1.21.10-v1.0.0.jar
+87d468aae1e3cabff2f92e0735fb8f6b1ef583845e7c7be7a58ef4f158c8ce1d  DiamondWorld-Fabric-1.21.10-v1.0.0.zip

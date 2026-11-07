@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "diamondworld:item/block_display_essence"
+  }
+}
