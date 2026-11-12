@@ -1,0 +1,134 @@
+{
+  "texture_count": 2791,
+  "alpha_and_dimensions": "PASS",
+  "untouched_vanilla_assets": [
+    "assets/minecraft/textures/entity/equipment/humanoid/diamond.png",
+    "assets/minecraft/textures/entity/equipment/humanoid_leggings/diamond.png",
+    "assets/minecraft/textures/entity/equipment/horse_body/diamond.png",
+    "assets/minecraft/textures/block/diamond_block.png",
+    "assets/minecraft/textures/block/ancient_debris_side.png",
+    "assets/minecraft/textures/block/ancient_debris_top.png",
+    "assets/minecraft/textures/item/diamond_chestplate.png",
+    "assets/minecraft/textures/item/diamond_axe.png",
+    "assets/minecraft/textures/item/diamond_hoe.png",
+    "assets/minecraft/textures/item/diamond_pickaxe.png",
+    "assets/minecraft/textures/item/diamond_boots.png",
+    "assets/minecraft/textures/item/diamond_horse_armor.png",
+    "assets/minecraft/textures/item/diamond.png",
+    "assets/minecraft/textures/item/diamond_shovel.png",
+    "assets/minecraft/textures/item/diamond_helmet.png",
+    "assets/minecraft/textures/item/diamond_leggings.png",
+    "assets/minecraft/textures/item/diamond_sword.png"
+  ],
+  "ores": {
+    "assets/minecraft/textures/block/diamond_ore.png": {
+      "exact_original_mineral_pixels": 93,
+      "host_pixels": 163,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/deepslate_coal_ore.png": {
+      "exact_original_mineral_pixels": 47,
+      "host_pixels": 209,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/deepslate_iron_ore.png": {
+      "exact_original_mineral_pixels": 63,
+      "host_pixels": 193,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/redstone_ore.png": {
+      "exact_original_mineral_pixels": 98,
+      "host_pixels": 158,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/deepslate_copper_ore.png": {
+      "exact_original_mineral_pixels": 50,
+      "host_pixels": 206,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/deepslate_gold_ore.png": {
+      "exact_original_mineral_pixels": 59,
+      "host_pixels": 197,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/nether_gold_ore.png": {
+      "exact_original_mineral_pixels": 33,
+      "host_pixels": 223,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/gold_ore.png": {
+      "exact_original_mineral_pixels": 93,
+      "host_pixels": 163,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/iron_ore.png": {
+      "exact_original_mineral_pixels": 63,
+      "host_pixels": 193,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/deepslate_lapis_ore.png": {
+      "exact_original_mineral_pixels": 60,
+      "host_pixels": 196,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/emerald_ore.png": {
+      "exact_original_mineral_pixels": 74,
+      "host_pixels": 182,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/coal_ore.png": {
+      "exact_original_mineral_pixels": 83,
+      "host_pixels": 173,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/copper_ore.png": {
+      "exact_original_mineral_pixels": 79,
+      "host_pixels": 177,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/lapis_ore.png": {
+      "exact_original_mineral_pixels": 98,
+      "host_pixels": 158,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/deepslate_emerald_ore.png": {
+      "exact_original_mineral_pixels": 53,
+      "host_pixels": 203,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/deepslate_diamond_ore.png": {
+      "exact_original_mineral_pixels": 86,
+      "host_pixels": 170,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/nether_quartz_ore.png": {
+      "exact_original_mineral_pixels": 59,
+      "host_pixels": 197,
+      "status": "PASS"
+    },
+    "assets/minecraft/textures/block/deepslate_redstone_ore.png": {
+      "exact_original_mineral_pixels": 73,
+      "host_pixels": 183,
+      "status": "PASS"
+    }
+  },
+  "pattern_luminance_correlation": {
+    "grass_block_top": 0.9462,
+    "oak_log": 0.9903,
+    "oak_log_top": 0.9881,
+    "oak_planks": 0.9887,
+    "cobblestone": 0.9729,
+    "stone": 0.9849,
+    "stone_bricks": 0.9766,
+    "crafting_table_front": 0.9804,
+    "crafting_table_top": 0.9851,
+    "furnace_front": 0.9791,
+    "furnace_front_on": 0.9673,
+    "oak_leaves": 0.9883,
+    "dirt": 0.9802,
+    "bricks": 0.9829,
+    "sand": 0.9599,
+    "glass": 0.9971
+  },
+  "grass_blockstate": "one fixed orientation; vanilla models and geometry; no frame stamped on texture"
+}

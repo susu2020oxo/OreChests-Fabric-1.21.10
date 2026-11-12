@@ -86,6 +86,7 @@ public final class DiamondWorld implements ModInitializer {
             }
         });
         EssenceAbilities.install();
+        PermanentHealth.install();
         HostileTraits.install();
         Verification.install();
         Preview.install();

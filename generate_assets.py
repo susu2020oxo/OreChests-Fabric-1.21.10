@@ -9,56 +9,74 @@ z=zipfile.ZipFile(sys.argv[1]);root=Path(__file__).parent/'src/main/resources'
 def write(path,data):
  p=root/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(data)
 def js(path,data):write(path,json.dumps(data,ensure_ascii=False,indent=2).encode())
-# Diamond block dominates the surface; the original pixels are a subtle relief layer.
-# Keep every original alpha pixel and image dimension so leaves, item silhouettes,
-# model UV layouts and animation frame metadata remain valid.
+# Retain each source texture's complete relief and layout. The material palette
+# comes ONLY from the unmodified vanilla diamond block (no invented cyan shades).
+# The faint facet signal uses vanilla diamond interior pixels, never a repeated
+# outer frame, so natural/rotated textures cannot create doubled tile borders.
 from PIL import ImageOps,ImageChops
-original_diamond=Image.open(io.BytesIO(z.read('assets/minecraft/textures/block/diamond_block.png'))).convert('RGB')
-def make_diamond_tile():
- tile=original_diamond.copy();pixels=[]
- for y in range(16):
-  for x in range(16):
-   r,g,b=tile.getpixel((x,y))
-   # A saturated cyan body, pale mint facets, and distinct inset block edges.
-   v=(r*.299+g*.587+b*.114)/255
-   t=max(0,min(1,(v-.43)/.49))
-   color=(int(6+150*t),int(140+112*t),int(151+100*t))
-   if x==0 or y==0:color=(109,248,238)
-   if x==15 or y==15:color=(6,133,146)
-   # Two stepped specular facets, matching vanilla pixel-art resolution.
-   if 8<=x+y<=9 and 2<=x<=12 and 2<=y<=12:
-    color=tuple(round(c*.57+h*.43) for c,h in zip(color,(201,255,248)))
-   if 18<=x+y<=19 and 3<=x<=12 and 3<=y<=12:
-    color=tuple(round(c*.75+h*.25) for c,h in zip(color,(161,255,248)))
-   pixels.append(color)
- tile.putdata(pixels);return tile
-DIAMOND_TILE=make_diamond_tile()
-CYAN_LUT=[]
+DIAMOND_PATH='assets/minecraft/textures/block/diamond_block.png'
+DIAMOND_SOURCE=z.read(DIAMOND_PATH)
+DIAMOND=Image.open(io.BytesIO(DIAMOND_SOURCE)).convert('RGB')
+DIAMOND_PALETTE=sorted(set(DIAMOND.getdata()),key=lambda c:c[0]*.299+c[1]*.587+c[2]*.114)
+PALETTE_LUT=[]
 for channel in range(3):
  for value in range(256):
-  t=(value/255)**.86
-  CYAN_LUT.append(round((4,43,54)[channel]+t*(174,212,198)[channel]))
-def recolor(data,name):
+  PALETTE_LUT.append(DIAMOND_PALETTE[min(len(DIAMOND_PALETTE)-1,round(value*(len(DIAMOND_PALETTE)-1)/255))][channel])
+DIAMOND_LUMA=ImageOps.grayscale(DIAMOND)
+DLO,DHI=DIAMOND_LUMA.getextrema()
+# Zero material modulation at the outer pixel ring prevents a stamped block frame.
+FACET=Image.new('L',(16,16),128)
+for y in range(1,15):
+ for x in range(1,15):FACET.putpixel((x,y),round((DIAMOND_LUMA.getpixel((x,y))-DLO)*255/(DHI-DLO)))
+
+def vanilla_diamond_asset(name):
+ path=name.removeprefix('assets/minecraft/textures/')
+ return (path in ('block/diamond_block.png','item/diamond.png','entity/shadow.png')
+  or (path.startswith('item/diamond_') and path.endswith('.png'))
+  or (path.startswith(('entity/equipment/','equipment/')) and path.endswith('/diamond.png')))
+
+def pattern_material(data,name,contrast_reference=None):
  im=Image.open(io.BytesIO(data)).convert('RGBA');w,h=im.size
- if name.endswith('/entity/shadow.png'):return data
- luminance=ImageOps.grayscale(im)
- original_cyan=Image.merge('RGB',(luminance,luminance,luminance)).point(CYAN_LUT)
- entity='/entity/' in name and not any(x in name for x in ('/boat/','/chest/','/signs/','/decorated_pot/'))
- tile=DIAMOND_TILE.resize((8,8),Image.Resampling.NEAREST) if entity else DIAMOND_TILE
- tiled=Image.new('RGB',im.size)
- for y in range(0,h,tile.height):
-  for x in range(0,w,tile.width):tiled.paste(tile,(x,y))
- # Diamond facets remain the main surface on blocks/items; slightly more facial relief on mobs.
- out=Image.blend(tiled,original_cyan,.28 if entity else .24)
- if not entity:
-  relief=luminance.point(lambda v:max(0,min(85,(110-v))))
-  out=Image.composite(original_cyan,out,relief)
- if entity:
-  # Eyes and mouth retain enough dark relief to identify the creature.
-  dark=luminance.point(lambda v:max(0,min(120,(64-v)*2)))
-  out=Image.composite(original_cyan,out,dark)
- if name.endswith('/block/diamond_block.png'):out=DIAMOND_TILE.copy()
- out.putalpha(im.getchannel('A'))
+ luma=ImageOps.grayscale(im)
+ # Normalize the source's own contrast, rather than replacing its bark, mortar,
+ # grain, face, ore clusters or tool silhouette with a common diamond tile.
+ reference=Image.open(io.BytesIO(contrast_reference)).convert('RGBA') if contrast_reference else im
+ histogram=ImageOps.grayscale(reference).histogram(mask=reference.getchannel('A'))
+ populated=[i for i,n in enumerate(histogram) if n]
+ lo=populated[0] if populated else 0;hi=populated[-1] if populated else 255
+ if hi>lo:pattern=luma.point([round(max(0,min(255,(v-lo)*255/(hi-lo)))) for v in range(256)])
+ else:pattern=Image.new('L',im.size,255 if lo>220 else 128)
+ facets=Image.new('L',im.size)
+ for y in range(0,h,16):
+  for x in range(0,w,16):facets.paste(FACET,(x,y))
+ # 92% source relief; only 8% of the untouched diamond's native highlight signal.
+ relief=Image.blend(pattern,facets,.08)
+ rgb=Image.merge('RGB',(relief,relief,relief)).point(PALETTE_LUT)
+ rgb.putalpha(im.getchannel('A'));return rgb
+
+def ore_host(name):
+ short=name.rsplit('/',1)[-1]
+ if not (name.startswith('assets/minecraft/textures/block/') and short.endswith('_ore.png')):return None
+ host='netherrack' if short.startswith('nether_') else 'deepslate' if short.startswith('deepslate_') else 'stone'
+ return 'assets/minecraft/textures/block/'+host+'.png'
+
+def recolor(data,name):
+ if vanilla_diamond_asset(name):return data
+ # Ancient debris is entirely mineral rather than ore inclusions in a rock host.
+ if name in ('assets/minecraft/textures/block/ancient_debris_side.png','assets/minecraft/textures/block/ancient_debris_top.png'):return data
+ host=ore_host(name)
+ if host:
+  source=Image.open(io.BytesIO(data)).convert('RGBA')
+  raw_host=z.read(host);base=Image.open(io.BytesIO(raw_host)).convert('RGBA')
+  out=pattern_material(data,name,raw_host)
+  # Ores rearrange ordinary host noise, so a positional comparison would keep
+  # unwanted gray rock pixels. Native-host palette exclusion identifies just
+  # mineral/shadow pigments; preserve those original pixels byte-for-byte.
+  mask=Image.new('L',source.size)
+  host_palette=set(base.convert('RGB').getdata())
+  mask.putdata([255 if a[:3] not in host_palette else 0 for a in source.getdata()])
+  out=Image.composite(source,out,mask)
+ else:out=pattern_material(data,name)
  buf=io.BytesIO();out.save(buf,format='PNG');return buf.getvalue()
 count=0
 for n in z.namelist():
@@ -69,6 +87,11 @@ for n in z.namelist():
     write(n,recolor(z.read(n),n))
     count+=1
    elif n.endswith('.mcmeta'):write(n,z.read(n))
+# Vanilla grass randomly rotates Y by 90 degrees. Keep one orientation so native
+# diamond highlights align across the floor instead of crisscrossing at seams.
+js('assets/minecraft/blockstates/grass_block.json',{'variants':{
+ 'snowy=false':{'model':'minecraft:block/grass_block'},
+ 'snowy=true':{'model':'minecraft:block/grass_block_snow'}}})
 # White maps prevent the grass/leaves biome tint from turning cyan back to green.
 for name in ('grass','foliage','dry_foliage'):
  im=Image.new('RGB',(256,256),'white');buf=io.BytesIO();im.save(buf,format='PNG');write('assets/minecraft/textures/colormap/'+name+'.png',buf.getvalue())
@@ -99,7 +122,10 @@ for k in en:
   name=k.split('.')[-1];mobs.append(name);item=name+'_essence';model(item,'minecraft:item/diamond')
   langs['zh_cn']['item.diamondworld.'+item]='钻石'+zh.get(k,name)+'精华'
   langs['en_us']['item.diamondworld.'+item]='Diamond '+en[k]+' Essence'
-for lang,data in langs.items():js('assets/diamondworld/lang/'+lang+'.json',data)
+for lang,data in langs.items():
+ path='assets/diamondworld/lang/'+lang+'.json'
+ previous=json.loads((root/path).read_text()) if (root/path).exists() else {}
+ previous.update(data);js(path,previous)
 # Override only food entries; keep looting, conditions and essential progression drops.
 def replace(obj):
  if isinstance(obj,dict):

@@ -29,8 +29,8 @@ public final class Verification {
    try {
     var world=server.getOverworld();var pos=new BlockPos(0,100,0);world.getChunk(0,0);
     check(Items.WOODEN_PICKAXE.getDefaultStack().getMaxDamage()==118,"wooden pickaxe durability doubled");
-    check(ToolMaterial.DIAMOND.speed()==12F,"diamond mining speed boosted");
-    check(ToolMaterial.STONE.attackDamageBonus()==3F,"stone tool attack damage boosted");
+    check(ToolMaterial.DIAMOND.speed()==15F,"diamond mining speed boosted");
+    check(ToolMaterial.STONE.attackDamageBonus()==5F,"stone tool attack damage boosted");
     var grass=Block.getDroppedStacks(Blocks.GRASS_BLOCK.getDefaultState(),world,pos,null);
     check(grass.size()==1 && grass.getFirst().isOf(DiamondWorld.fragment),"grass drops diamond fragment");
     var stone=Block.getDroppedStacks(Blocks.STONE.getDefaultState(),world,pos,null,null,new ItemStack(Items.IRON_PICKAXE));
@@ -56,6 +56,8 @@ public final class Verification {
     var mutton=Registries.ITEM.get(Identifier.of("diamondworld","diamond_mutton"));
     check(world.getEntitiesByClass(ItemEntity.class,new Box(5,95,-5,15,105,5),e->e.getStack().isOf(mutton)).size()>0,"sheep actually drops diamond mutton");
     V11Verification.run(server);
+    PermanentHealthVerification.run(server);
+    GearVerification.run(server);
     java.util.Map<String,Object> profiles=new java.util.TreeMap<>();
     for(var entry:DiamondWorld.ESSENCES.entrySet()) {
         String species=Registries.ENTITY_TYPE.getId(entry.getKey()).getPath();

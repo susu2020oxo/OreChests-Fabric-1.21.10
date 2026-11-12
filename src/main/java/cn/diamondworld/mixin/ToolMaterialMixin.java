@@ -13,8 +13,8 @@ public abstract class ToolMaterialMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void diamondworld$empower(CallbackInfo ci) {
         durability = Math.max(1, durability * 2);
-        speed *= 1.5F;
-        attackDamageBonus += 2.0F;
+        speed = speed * 1.5F + 3.0F;
+        attackDamageBonus += 4.0F;
         enchantmentValue += 5;
     }
 }
