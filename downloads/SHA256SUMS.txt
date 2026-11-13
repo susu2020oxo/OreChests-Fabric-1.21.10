@@ -1,0 +1,2 @@
+fa82a61ff12878bbc0874b47bfb25f748544afdc4b6755c38dc0d2d4c37dbb13  BabyWorld-Fabric-26.2-1.0.0.jar
+3f952fbd5d4dd3a920218a1837035a91f1e69a22ae0365788d25306c78f0ab2c  BabyWorld-Fabric-26.2-1.0.0.zip
