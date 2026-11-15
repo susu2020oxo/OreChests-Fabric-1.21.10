@@ -1,0 +1,7 @@
+Compression World 1.0.0-beta.2 / Minecraft 26.2 / Fabric Loader 0.20.1 / Fabric API 0.161.0+26.2 / Java 25
+
+PASS 21671 assertions; 1537 item types; crafting, level cap, reversible components, damage, giant collision/loot/persistence, crop growth, legacy compressor, workbench recipes, food health, arrows, mining, summons, 32-lane furnace and paged menu, furnace persistence, compressed smelting and bucket remainders, TNT x3 strength/fuse/terrain destruction/budget/bedrock.
+
+PASS: client render-state and item-model mixins transformed, scale interface invoked, state reset. GPU visual appearance not tested.
+
+JAR SHA-256: 33e0901ad920e23c2d1ede6271cf80ff3dc96665b7d4f6e739bd905464663814
