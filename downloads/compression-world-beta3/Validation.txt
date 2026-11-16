@@ -1,0 +1,8 @@
+Compression World 26.2 Fabric beta3
+Environment: Minecraft 26.2; Fabric Loader 0.20.1; Fabric API 0.161.0+26.2; Java 25
+
+PASS 21761 assertions; 1537 item types; crafting, level cap, reversible components, damage, giant collision/loot/persistence, crop growth, legacy compressor, workbench recipes, food health, arrows, mining, summons, 32-lane furnace and paged menu, furnace persistence, compressed smelting and bucket remainders, TNT x3 strength/fuse/terrain destruction/budget/bedrock; beta3 functional machines, storage, ender, shulker, enchanting, anvil, smithing, brewing, cooking, water, automation, XP, milk, poison, potions, totems, shears, beacon.
+
+PASS: client render-state and item-model mixins transformed, scale/offset interfaces and enhanced-anvil screen transformed, state reset. GPU visual appearance not tested.
+
+No GPU gameplay, multiplayer client, modpack or shader compatibility test.
